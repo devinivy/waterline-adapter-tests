@@ -83,6 +83,38 @@ describe('Association Interface', function() {
           });
         });
 
+        describe('and custom id specified on parent with empty nested association', function() {
+
+          /////////////////////////////////////////////////////
+          // TEST METHODS
+          ////////////////////////////////////////////////////
+
+          it('should create a new apartment without associated payments', function(done) {
+
+            var data = {
+              number: '66b',
+              building: 'has many nested',
+              payments: []
+            };
+
+            Associations.Apartment.create(data).exec(function(err, values) {
+              assert(!err, err);
+
+              // Look up the customer again to be sure the payments were added
+              Associations.Apartment.findOne('66b')
+              .populate('payments')
+              .exec(function(err, model) {
+                assert(!err, err);
+                
+                assert.equal(model.number, '66b')
+                assert.equal(model.payments.length, 0);
+                done();
+              });
+
+            });
+          });
+        });
+        
       });
     });
   });
