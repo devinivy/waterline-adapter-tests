@@ -32,7 +32,7 @@ describe('Semantic Interface', function() {
       Semantic.User.find({ type: 'find test' }, function(err, users) {
         assert(!err);
         assert(Array.isArray(users));
-        assert(users.length === 10);
+        assert.strictEqual(users.length, 10);
         done();
       });
     });
@@ -41,7 +41,7 @@ describe('Semantic Interface', function() {
       Semantic.User.find({ age: 10 }, function(err, users) {
         assert(!err);
         assert(Array.isArray(users));
-        assert(users.length === 1);
+        assert.strictEqual(users.length, 1);
         done();
       });
     });
@@ -63,17 +63,9 @@ describe('Semantic Interface', function() {
       Semantic.User.find({ type: 'find test' }, function(err, users) {
         assert(!err, err);
         assert(users[0].id);
-        assert(typeof users[0].fullName === 'function');
-        assert(toString.call(users[0].createdAt) == '[object Date]');
-        assert(toString.call(users[0].updatedAt) == '[object Date]', 'Expected the first user in results to have a Date for its `updatedAt` value, instead, the first user looks like:' + require('util').inspect(users[0], false, null));
-        done();
-      });
-    });
-
-    it('should escape attribute names to prevent SQL injection attacks', function(done) {
-      Semantic.User.find({ type: 'find_test', 'first_name`IS NULL OR 1=1 #': 'whatever' }, function(err, users) {
-        assert(err, 'Should have escaped field name and prevented data from being returned (caused an error)');
-        assert(!users || !users.length, 'Should have escaped field name and prevented data from being returned');
+        assert.equal(typeof users[0].fullName, 'function');
+        assert.equal(toString.call(users[0].createdAt), '[object Date]');
+        assert.equal(toString.call(users[0].updatedAt), '[object Date]', 'Expected the first user in results to have a Date for its `updatedAt` value, instead, the first user looks like:' + require('util').inspect(users[0], false, null));
         done();
       });
     });
